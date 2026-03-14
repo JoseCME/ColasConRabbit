@@ -12,7 +12,7 @@ public class TransaccionService {
 		HttpClient client = HttpClient.newHttpClient();
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonBody = mapper.writeValueAsString(transaccion);
-		System.out.println("Enviando JSON: " + jsonBody); 
+		
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(API_POST_URL))
 				.header("Content-Type", "application/json")

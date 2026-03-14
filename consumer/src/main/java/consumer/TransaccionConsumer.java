@@ -15,17 +15,22 @@ public class TransaccionConsumer {
 		Connection connection = RabbitMQConexion.obtenerConexion();
 		Channel channel = connection.createChannel();
 		ObjectMapper mapper = new ObjectMapper();
-		channel.basicQos(1);
+		channel.basicQos(3);
 		DeliverCallback callback = (consumerTag, delivery) -> {
 		    try {
 		        String mensajeStr = new String(delivery.getBody());
 		        Transaccion transaccion = mapper.readValue(mensajeStr, Transaccion.class);
 		        boolean exito = TransaccionService.enviarTransaccion(transaccion);
-		        if (exito) {
-		            channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-		            System.out.println("Procesada: " + transaccion.getIdTransaccion());
-		        } else {
-		            System.out.println(" Error POST, no se hace ACK: " + transaccion.getIdTransaccion());
+		        if (transaccion.getMonto() < 4000) {
+		        	
+		        	  System.out.println(" Se RECHAZA "+ transaccion.getIdTransaccion() + " monto " + transaccion.getMonto());
+		        	  
+		        }else if(exito) {
+		        	channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+		            System.out.println(" Se APROBO: " + transaccion.getIdTransaccion()+ " monto " + transaccion.getMonto());
+		         
+		        }else {
+		        	 System.out.println(" Error POST, no se hace ACK: " + transaccion.getIdTransaccion());
 		        }
 		    } catch (Exception e) {
 		        e.printStackTrace();
