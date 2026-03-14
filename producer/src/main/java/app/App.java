@@ -18,6 +18,7 @@ public class App {
 		    TransaccionProducer.enviar(transacciones);
 		} catch (Exception e) {
 		    e.printStackTrace();
+		    
 		}
 	}
 
